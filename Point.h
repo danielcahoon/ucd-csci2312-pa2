@@ -3,7 +3,8 @@
 
 #include <iostream>
 
-namespace Clustering {
+namespace Clustering 
+{
 
     class Point {
         unsigned int __id;
@@ -14,7 +15,7 @@ namespace Clustering {
 
     public:
         Point(int);
-        Point(int, double *);
+        // Point(int, double *);
 
         // Big three: cpy ctor, overloaded operator=, dtor
         Point(const Point &);
@@ -59,4 +60,5 @@ namespace Clustering {
     };
 
 }
-#endif //CLUSTERING_POINT_H
+       //CLUSTERING_POINT_H
+#endif

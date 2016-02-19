@@ -3,7 +3,8 @@
 
 #include "Point.h"
 
-namespace Clustering {
+namespace Clustering 
+{
 
     typedef struct LNode *LNodePtr;
 
@@ -73,4 +74,5 @@ namespace Clustering {
     };
 
 }
-#endif //CLUSTERING_CLUSTER_H
+       //CLUSTERING_CLUSTER_H
+#endif
