@@ -1,6 +1,7 @@
 //Point.cpp
-#include <assert.h>
+#include <cassert>
 #include <cmath>
+#include <iostream>
 
 #include "Point.h"
 
@@ -9,6 +10,14 @@ namespace Clustering
 {
 
 	unsigned int Point::__idGen = 0;
+	//Default Constructor
+	Point::Point()
+	{
+		__dim = 0;
+		__values = new double[__dim];
+		__id = __idGen;
+		__idGen++;
+	}
 	//One argument constructor
 	Point::Point(int dim)
 	{
@@ -42,7 +51,7 @@ namespace Clustering
 		std::size_t i;
 		double *newPoint;
 
-		if (*this == p)
+		if (this == &p)
 		{
 			return *this;
 		}
@@ -57,6 +66,7 @@ namespace Clustering
 		{
 			__values[i] = p.__values[i];
 		}
+		__id = p.__id;
 		return *this;
 	}
 
@@ -64,8 +74,6 @@ namespace Clustering
 	{
 		delete [] __values;
 	}
-
-
 
 	//Accesors and Mutators
 	int Point::getId() const
@@ -78,27 +86,13 @@ namespace Clustering
 		return __dim;
 	}
 
-	void Point::setValue(int j, double p)
+	void Point::setValue(int i, double p)
 	{
-		for(int i = 0; i < __dim; i++)
-		{
-			if (i == j)
-			{
-				__values[i] = p;
-			}
-		}
+		__values[i] = p;
 	}
 
-	double Point::getValue(int j) const
+	double Point::getValue(int i) const
 	{
-		int i;
-		for (i = 0; i < __dim; ++i)
-		{
-			if (i == j)
-			{
-				break;
-			}
-		}
 		return __values[i];
 	}
 
@@ -163,7 +157,6 @@ namespace Clustering
 	}
 
 	//Friends
-
 	Point& operator+=(Point &p, const Point &q)
 	{
 		assert (p.__dim	== q.__dim);
@@ -203,25 +196,24 @@ namespace Clustering
 	bool operator==(const Point &lhs, const Point &rhs)
 	{
 		assert(lhs.__dim == rhs.__dim);
-		bool same = true;
+
 		for (int i = 0; i < lhs.__dim; ++i)
 		{
 			if (lhs.__values[i] != rhs.__values[i])
-				same = false;
+				return false;
 		}
-		return same;
+		return true;
 	}
 
 	bool operator!=(const Point &lhs, const Point &rhs)
 	{
 		assert(lhs.__dim == rhs.__dim);
 		
-		for (int i = 0; i < lhs.__dim; ++i)
+		if (lhs == rhs)
 		{
-			if (lhs.__values[i] != rhs.__values[i])
-				return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	bool operator<(const Point &lhs, const Point &rhs)
@@ -230,6 +222,8 @@ namespace Clustering
 		{
 			if (lhs.__values[i] < rhs.__values[i])
 				return true;
+			else if (lhs.__values[i] > rhs.__values[i])
+				return false;
 		}
 		return false;
 	}
@@ -262,55 +256,26 @@ namespace Clustering
 
 	std::ostream& operator<<(std::ostream &os, const Point &rhs)
 	{
-		//os << '(';
-		for (int i = 0; i < rhs.__dim; ++i)
+		int i = 0;
+		for (; i < rhs.__dim - 1; ++i)
 		{
-			if (i == rhs.__dim - 1)
-			{
-				os << rhs.__values[i];// << ')' << std::endl;
-				break;
-			}
-			os << rhs.__values[i]<< " ";
+			os << rhs.__values[i] << ", ";
 		}
+		os << rhs.__values[i];
 		return os;
 	}
 
 	std::istream& operator>>(std::istream &is, Point &rhs)
 	{
-		char charBuff[256];
-		double tempDouble = 4;
-		//is.get(charBuff,1);
+		std::string value;
+		double d;
+		int i = 0;
 
-		for (int i = 0; i < rhs.__dim; ++i)
+		while (getline(is, value, ','))
 		{
-			if(i == rhs.__dim - 1)
-			{
-				is >> tempDouble;
-				//std::cout << "tempDouble = " << tempDouble << std::endl;
-				rhs.__values[i] = tempDouble;
-				//std::cout << rhs.__values[i] << std::endl;
-				// is.get(charBuff, 1);	//gets the )
-				// is.get(charBuff,1);	//gets the \n character
-				break;
-			}
-
-			is >> tempDouble;
-			//std::cout << "tempDouble = " << tempDouble << std::endl;
-			rhs.__values[i] = tempDouble;
-			//std::cout << rhs.__values[i] << std::endl;
-		 	// rhs.__values[i] = atof(charBuff);
-			if (isspace(is.peek()))
-			{
-				is.ignore();
-				continue;
-			}
+			d = stod(value);
+			rhs.__values[i++] = d;
 		}
 		return is;
 	}
-
-
-
-
-
-
 }

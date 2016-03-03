@@ -17,9 +17,9 @@ namespace Clustering
     };
 
     class Cluster {
-
+    private:
         int __size;
-        LNodePtr __points;
+        LNodePtr __head;
 
         void __del();
         void __cpy(LNodePtr pts);
