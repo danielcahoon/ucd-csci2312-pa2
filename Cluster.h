@@ -19,7 +19,7 @@ namespace Clustering
     class Cluster {
     private:
         int __size;
-        LNodePtr __head;
+        LNodePtr __points;
 
         void __del();
         void __cpy(LNodePtr pts);

@@ -26,27 +26,27 @@ namespace Clustering
 	//deleting function
 	void Cluster::__del()
 	{
-		while (__head != nullptr && __head->next != nullptr)
+		while (__points != nullptr && __points->next != nullptr)
 		{
 			int i = 1;
 			// cout << "Entered while loop time " << i << endl;
 			LNodePtr temp;
-			temp = __head->next;
-			delete __head;
-			__head = temp;
+			temp = __points->next;
+			delete __points;
+			__points = temp;
 			++i;
 		}
 		// cout << "Exited while loop" << endl;
-		if (__head != nullptr && __head->next == nullptr)
+		if (__points != nullptr && __points->next == nullptr)
 		{
-			delete __head;
+			delete __points;
 		}
 	}
 
 	//Copying Function
 	void Cluster::__cpy(LNodePtr pts)
 	{
-		this->__head = new LNode(pts->point, nullptr);
+		this->__points = new LNode(pts->point, nullptr);
 		this->__size++;
 			
 		pts = pts->next;
@@ -60,7 +60,7 @@ namespace Clustering
 	//Point id comparison function
 	bool Cluster::__in(const Point &p) const
 	{
-		LNodePtr curr = __head;
+		LNodePtr curr = __points;
 		while (curr->next != nullptr)
 		{
 			// cout << endl << "curr pt id = " << curr->point.getId() << endl;
@@ -82,7 +82,7 @@ namespace Clustering
 	}
 
 	//Default Constructor
-	Cluster::Cluster(): __size(0), __head(nullptr)
+	Cluster::Cluster(): __size(0), __points(nullptr)
 	{
 	}
 
@@ -91,16 +91,16 @@ namespace Clustering
 	{
 		if (c.__size == 0)
 		{
-			__head = nullptr;
+			__points = nullptr;
 		}
 		else if (c.__size == 1)
 		{
-			__head = new LNode(c.__head->point, nullptr);
+			__points = new LNode(c.__points->point, nullptr);
 			__size++;
 		}
 		else if (c.__size > 1)
 		{
-			LNodePtr temp = c.__head;
+			LNodePtr temp = c.__points;
 			__cpy(temp);
 		}
 		assert(__size == c.__size);
@@ -116,7 +116,7 @@ namespace Clustering
 		else
 		{
 			__del();
-			LNodePtr temp = c.__head;
+			LNodePtr temp = c.__points;
 			__size = 0;
 			__cpy(temp);
 			assert(this->__size == c.__size);
@@ -140,33 +140,33 @@ namespace Clustering
 	void Cluster::add(const Point &p)
 	{
 		LNodePtr temp = new LNode(p, nullptr);
-		LNodePtr prev = __head;
-		LNodePtr curr = __head;
+		LNodePtr prev = __points;
+		LNodePtr curr = __points;
 		
 		if (__size == 0)
 		{
-			__head = temp;
+			__points = temp;
 			__size++;
 		}
 		else if (__size == 1)
 		{
-			assert(p.getDims() == __head->point.getDims());
+			assert(p.getDims() == __points->point.getDims());
 			if (temp->point < curr->point)
 			{
-				LNodePtr foo = __head;
+				LNodePtr foo = __points;
 				temp->next = foo;
-				__head = temp;
+				__points = temp;
 				__size++;
 			}
 			else 
 			{
-				__head->next = temp;
+				__points->next = temp;
 				__size++;
 			}
 		}
 		else if (__size > 1)
 		{
-			assert(p.getDims() == __head->point.getDims());
+			assert(p.getDims() == __points->point.getDims());
 
 			int i = 0;
 
@@ -174,11 +174,11 @@ namespace Clustering
 			{
 				if (temp->point < curr->point)
 				{
-					if (curr == __head)
+					if (curr == __points)
 					{
-						LNodePtr foo = __head;
+						LNodePtr foo = __points;
 						temp->next = foo;
-						__head = temp;
+						__points = temp;
 						break;
 					}
 					else
@@ -209,16 +209,16 @@ namespace Clustering
 	{
 		int i = 0;
 		LNodePtr temp;
-		LNodePtr prev = __head;
-		LNodePtr curr = __head;
+		LNodePtr prev = __points;
+		LNodePtr curr = __points;
 
 		while (curr != nullptr)
 		{
 			if (curr->point == p)
 			{
-				if (curr == __head)
+				if (curr == __points)
 				{
-					__head = __head->next;
+					__points = __points->next;
 					delete curr;
 					--__size;
 					break;
@@ -250,7 +250,7 @@ namespace Clustering
 		// {
 		// 	return false;
 		// }
-		// LNodePtr curr = __head;
+		// LNodePtr curr = __points;
 		// while (curr->next != nullptr)
 		// {
 		// 	if (p == curr->point)
@@ -273,12 +273,12 @@ namespace Clustering
 	const Point& Cluster::operator[](unsigned int index) const 
 	{
 		assert(index < __size);
-		LNodePtr curr = __head;
+		LNodePtr curr = __points;
 		
 		int i = 1;
 		if (index == 0)
 		{
-			return __head->point;
+			return __points->point;
 		}
 		curr = curr->next;
 
@@ -312,7 +312,7 @@ namespace Clustering
 	//Members: Compound assignment (Cluster argument)
 	Cluster& Cluster::operator+=(const Cluster &c) //Union
 	{
-		LNodePtr temp = c.__head;
+		LNodePtr temp = c.__points;
 
 		while (temp != nullptr)
 		{
@@ -327,7 +327,7 @@ namespace Clustering
 
 	Cluster& Cluster::operator-=(const Cluster &c) // (asymmetric) difference
 	{
-		LNodePtr temp = c.__head;
+		LNodePtr temp = c.__points;
 		while (temp != nullptr)
 		{
 			if (this->__in(temp->point))
@@ -343,7 +343,7 @@ namespace Clustering
 	//Friends: IO
 	std::ostream& operator<<(std::ostream &os, const Cluster &c)
 	{
-		LNodePtr curr = c.__head;
+		LNodePtr curr = c.__points;
 		if (c.__size == 0)
 		{
 			return os;
@@ -395,8 +395,8 @@ namespace Clustering
 			return false;
 		}
 
-		LNodePtr lCurr = lhs.__head;
-		LNodePtr rCurr = rhs.__head;
+		LNodePtr lCurr = lhs.__points;
+		LNodePtr rCurr = rhs.__points;
 
 		while (lCurr != nullptr)
 		{

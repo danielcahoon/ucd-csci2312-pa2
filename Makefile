@@ -1,4 +1,4 @@
-CXX  		:=c++
+CXX  	 := c++
 CXXFLAGS := -g -std=gnu++11
 
 ucd-csci2312-pa2: Cluster.o ClusteringTests.o ErrorContext.o Point.o main.o
